@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comparación del Crecimiento en Regiones</title>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+</head>
+<body>
+  <h1>Comparación del Crecimiento en Regiones sin Lima y Callao</h1>
+  <div id="chart_div"></div>
+
+  <script>
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+      fetch('data.json')
+        .then(response => response.json())
+        .then(data => {
+          const filteredData = data.filter(entry => entry.region !== 'Lima' && entry.region !== 'Callao');
+
+          const chartData = [['Fecha']];
+          const regionData = {};
+
+          filteredData.forEach(entry => {
+            chartData[0].push(entry.region);
+            entry.confirmed.forEach(record => {
+              const date = record.date;
+              if (!regionData[date]) {
+                regionData[date] = {};
+              }
+              regionData[date][entry.region] = parseInt(record.value);
+            });
+          });
+
+          Object.keys(regionData).forEach(date => {
+            const row = [date];
+            filteredData.forEach(entry => {
+              row.push(regionData[date][entry.region] || 0);
+            });
+            chartData.push(row);
+          });
+
+          const dataTable = google.visualization.arrayToDataTable(chartData);
+          const options = {
+            title: 'Comparación del Crecimiento en Regiones',
+            hAxis: { title: 'Fecha' },
+            vAxis: { title: 'Número de Casos' },
+            legend: { position: 'bottom' }
+          };
+
+          const chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+          chart.draw(dataTable, options);
+        })
+        .catch(error => console.error('Error al obtener los datos:', error));
+    }
+  </script>
+</body>
+</html>
