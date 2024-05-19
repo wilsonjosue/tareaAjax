@@ -1,61 +1,71 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lista de Regiones</title>
-  <!-- Incluir la biblioteca de Google Charts -->
-  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Casos Confirmados en Arequipa</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        #chart_div {
+            width: 100%;
+            height: 500px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Gráfico de Barras de Regiones</h1>
-    <!-- Div donde se mostrará el gráfico -->
-    <div id="chart_div"></div>
 
-    <script>
-        // Cargar la biblioteca de Google Charts
-        google.charts.load('current', {'packages':['corechart']});
-        google.charts.setOnLoadCallback(drawChart);
+<h1>Evolución de Casos Confirmados en Arequipa</h1>
+<div id="chart_div"></div>
 
-        function drawChart() {
-        // Obtener los datos JSON
+<script>
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
         fetch('data.json')
             .then(response => response.json())
             .then(data => {
-            // Crear un array para almacenar los datos del gráfico
-            const chartData = [['Región', 'Confirmados']];
+                const arequipaData = data.find(entry => entry.region === 'Arequipa');
+                const chartData = [['Fecha', 'Confirmados']];
 
-            // Iterar sobre los datos JSON y agregarlos al array
-            data.forEach(entry => {
-                const region = entry.region;
-                const confirmed = entry.confirmed.length > 0 ? parseInt(entry.confirmed[entry.confirmed.length - 1].value) : 0;
-                chartData.push([region, confirmed]);
-            });
-
-            // Crear y configurar el DataTable
-            const dataTable = google.visualization.arrayToDataTable(chartData);
-
-            // Configurar las opciones del gráfico
-            const options = {
-                title: 'Casos Confirmados por Región',
-                chartArea: {width: '50%'},
-                hAxis: {
-                    title: 'Número de Casos',
-                    minValue: 0
-                },
-                vAxis: {
-                    title: 'Región'
+                if (arequipaData && arequipaData.confirmed.length > 0) {
+                    arequipaData.confirmed.forEach(entry => {
+                        const date = new Date(entry.date);
+                        const confirmed = parseInt(entry.value);
+                        chartData.push([date, confirmed]);
+                    });
                 }
-            };
 
-            // Crear el gráfico de barras y mostrarlo en el div
-            const chart = new google.visualization.BarChart(document.getElementById('chart_div'));
-            chart.draw(dataTable, options);
-        })
-        // Manejar errores
-        .catch(error => console.error('Error al obtener los datos:', error));
+                const dataTable = google.visualization.arrayToDataTable(chartData);
+
+                const options = {
+                    title: 'Casos Confirmados en Arequipa a lo Largo del Tiempo',
+                    hAxis: {
+                        title: 'Fecha',
+                        format: 'dd/MM/yyyy',
+                        gridlines: { count: 15 }
+                    },
+                    vAxis: {
+                        title: 'Número de Casos',
+                        minValue: 0
+                    },
+                    legend: 'none'
+                };
+
+                const chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+                chart.draw(dataTable, options);
+            })
+            .catch(error => console.error('Error al obtener los datos:', error));
     }
-  </script>
+</script>
+
 </body>
 </html>
