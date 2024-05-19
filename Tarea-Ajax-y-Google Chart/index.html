@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,22 +10,25 @@
   <ul id="region-list"></ul>
 
   <script>
-
-    // Fetch the JSON data
-    fetch('data.json').then(response => response.json()).then(data => {
-        // Extract region names from the JSON data
+    // Obtener los datos JSON
+    fetch('data.json')
+      // Convertir la respuesta a JSON
+      .then(response => response.json())
+      // Procesar los datos JSON
+      .then(data => {
+        // Extraer los nombres de las regiones de los datos JSON
         const regions = data.map(entry => entry.region);
 
-        // Display the region names in a list
+        // Mostrar los nombres de las regiones en una lista
         const regionList = document.getElementById('region-list');
         regions.forEach(region => {
-            const listItem = document.createElement('li');
-            listItem.textContent = region;
-            regionList.appendChild(listItem);
+          const listItem = document.createElement('li');
+          listItem.textContent = region;
+          regionList.appendChild(listItem);
         });
-    })
-  .catch(error => console.error('Error fetching data:', error));
-  
+      })
+      // Manejar errores
+      .catch(error => console.error('Error al obtener los datos:', error));
   </script>
 </body>
 </html>
