@@ -3,17 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lista de Regiones</title>
+  <title>Comparación de Regiones</title>
   <!-- Incluir la biblioteca de Google Charts -->
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-
 </head>
 <body>
-    <h1>Gráfico de Barras de Regiones</h1>
+    <h1>Comparación de Regiones</h1>
+    
+    <label for="regions">Seleccione las Regiones:</label>
+    <select id="regions" multiple>
+        <!-- Las opciones serán cargadas dinámicamente -->
+    </select>
+    
+    <button onclick="compareRegions()">Comparar</button>
+    
     <!-- Div donde se mostrará el gráfico -->
     <div id="chart_div"></div>
 
     <script>
+        // Cargar la biblioteca de Google Charts
+        google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(loadRegionOptions);
+
         // Función para cargar las opciones de regiones en el formulario
         function loadRegionOptions() {
             fetch('data.json')
@@ -71,8 +82,6 @@
                 })
                 .catch(error => console.error('Error al obtener los datos:', error));
         }
-        google.charts.load('current', {'packages':['corechart']});
-        google.charts.setOnLoadCallback(loadRegionOptions);
     </script>
 </body>
 </html>
