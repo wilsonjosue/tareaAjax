@@ -14,48 +14,65 @@
     <div id="chart_div"></div>
 
     <script>
-        // Cargar la biblioteca de Google Charts
+        // Función para cargar las opciones de regiones en el formulario
+        function loadRegionOptions() {
+            fetch('data.json')
+                .then(response => response.json())
+                .then(data => {
+                    const regionSelect = document.getElementById('regions');
+                    data.forEach(entry => {
+                        const region = entry.region;
+                        const option = document.createElement('option');
+                        option.value = region;
+                        option.textContent = region;
+                        regionSelect.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Error al obtener los datos:', error));
+        }
+
+        // Función para comparar las regiones seleccionadas y generar el gráfico
+        function compareRegions() {
+            const selectedRegions = Array.from(document.getElementById('regions').selectedOptions).map(option => option.value);
+            if (selectedRegions.length < 2) {
+                alert('Selecciona al menos dos regiones para comparar.');
+                return;
+            }
+
+            fetch('data.json')
+                .then(response => response.json())
+                .then(data => {
+                    const chartData = [['Fecha']];
+
+                    // Agregar las regiones seleccionadas como columnas
+                    selectedRegions.forEach(region => chartData[0].push(region));
+
+                    // Iterar sobre los datos JSON y agregar los valores de casos confirmados para las regiones seleccionadas
+                    data[0].confirmed.forEach(day => {
+                        const rowData = [day.date];
+                        selectedRegions.forEach(region => {
+                            const regionData = data.find(entry => entry.region === region);
+                            const confirmed = regionData.confirmed.find(item => item.date === day.date);
+                            rowData.push(confirmed ? parseInt(confirmed.value) : 0);
+                        });
+                        chartData.push(rowData);
+                    });
+
+                    const dataTable = google.visualization.arrayToDataTable(chartData);
+
+                    const options = {
+                        title: 'Comparación de Casos Confirmados por Región',
+                        curveType: 'function',
+                        legend: { position: 'bottom' }
+                    };
+
+                    const chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+                    chart.draw(dataTable, options);
+                })
+                .catch(error => console.error('Error al obtener los datos:', error));
+        }
         google.charts.load('current', {'packages':['corechart']});
-        google.charts.setOnLoadCallback(drawChart);
-
-        function drawChart() {
-        // Obtener los datos JSON
-        fetch('data.json')
-            .then(response => response.json())
-            .then(data => {
-            // Crear un array para almacenar los datos del gráfico
-            const chartData = [['Región', 'Confirmados']];
-
-            // Iterar sobre los datos JSON y agregarlos al array
-            data.forEach(entry => {
-                const region = entry.region;
-                const confirmed = entry.confirmed.length > 0 ? parseInt(entry.confirmed[entry.confirmed.length - 1].value) : 0;
-                chartData.push([region, confirmed]);
-            });
-
-            // Crear y configurar el DataTable
-            const dataTable = google.visualization.arrayToDataTable(chartData);
-
-            // Configurar las opciones del gráfico
-            const options = {
-                title: 'Casos Confirmados por Región',
-                chartArea: {width: '50%'},
-                hAxis: {
-                    title: 'Número de Casos',
-                    minValue: 0
-                },
-                vAxis: {
-                    title: 'Región'
-                }
-            };
-
-            // Crear el gráfico de barras y mostrarlo en el div
-            const chart = new google.visualization.BarChart(document.getElementById('chart_div'));
-            chart.draw(dataTable, options);
-        })
-        // Manejar errores
-        .catch(error => console.error('Error al obtener los datos:', error));
-    }
-  </script>
+        google.charts.setOnLoadCallback(loadRegionOptions);
+    </script>
 </body>
 </html>
