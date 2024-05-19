@@ -1,35 +1,79 @@
 <!DOCTYPE html>
 <html>
-    <body>
-      <!--
-        AJAX: Creacion del objeto XMLHttpRequest 
-        EJEMPLO 3
-        La propiedad onreadystatechange
-      -->
-      <div id="demo">
-        <h2>The XMLHttpRequest Object</h2>
-        <button type="button" onclick="loadDoc()">Change Content</button>
-      </div>
-  
-      <script>
-        // Función para cargar contenido usando XMLHttpRequest
-        function loadDoc() {
-          const xhttp = new XMLHttpRequest();
-  
-          // Evento que se ejecuta cuando cambia el estado de readyState
-          xhttp.onreadystatechange = function() {
-            // Comprueba si la solicitud está completa (readyState 4) y fue exitosa (status 200)
-            if (this.readyState == 4 && this.status == 200) {
-              // Actualiza el contenido del elemento con id="demo"
-              document.getElementById("demo").innerHTML = this.responseText;
-            }
-          };
-  
-          // Abre una nueva solicitud GET a ajax_info.txt
-          xhttp.open("GET", "ajax_info.txt", true);
-          // Envía la solicitud
-          xhttp.send();
+<head>
+    <title>AJAX con Función de Devolución de Llamada</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+
+<h1>Realizar Tarea AJAX con Función de Devolución de Llamada</h1>
+
+<div>
+    <button onclick="loadData('ajax_info.txt', showData1)">Cargar Datos 1</button>
+</div>
+<div>
+    <button onclick="loadData('xml_info.xml', showData2)">Cargar Datos 2</button>
+</div>
+
+<div id="result"></div>
+
+<div><p id="demo"></p></div>
+
+<div><p id="demo1"></p></div>
+
+<script>
+function loadData(url, callback) {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            callback(this.responseText);
         }
-      </script>
-    </body>
+    };
+    xhttp.open("GET", url, true);
+    xhttp.send();
+}
+
+function showData1(response) {
+    document.getElementById("result").innerHTML = response;
+    // Mostrar el encabezado "Last-Modified"
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            document.getElementById("demo").innerHTML = this.getResponseHeader("Last-Modified");
+        }
+    };
+    xhttp.open("HEAD", "ajax_info.txt", true);
+    xhttp.send();
+}
+
+function showData2(response) {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            var xmlDoc = this.responseXML;
+            var txt = "";
+            var x = xmlDoc.getElementsByTagName("ARTIST");
+            for (var i = 0; i < x.length; i++) {
+                txt += x[i].childNodes[0].nodeValue + "<br>";
+            }
+            document.getElementById("result").innerHTML = txt;
+        }
+    };
+    xhttp.open("GET", "xml_info.xml", true);
+    xhttp.send();
+
+    // Mostrar todos los encabezados de la respuesta
+
+    var xhttpHeaders = new XMLHttpRequest();
+    xhttpHeaders.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            document.getElementById("demo1").innerHTML = this.getAllResponseHeaders();
+        }
+    };
+    xhttpHeaders.open("GET", "xml_info.xml", true);
+    xhttpHeaders.send();
+}
+</script>
+
+</body>
 </html>

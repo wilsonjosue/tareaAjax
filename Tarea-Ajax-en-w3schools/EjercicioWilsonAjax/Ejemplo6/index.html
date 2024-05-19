@@ -1,24 +1,37 @@
 <!DOCTYPE html>
 <html>
+    <head>
+        <title>El Objeto XMLHttpRequest</title>
+        <meta charset="UTF-8">
+    </head>
 <body>
-    <!--
-      AJAX - Solicitud XMLHttpRequest
-      EJEMPLO 2
-      Resultado almacenado en caché, para evitar esto.
-    -->
-    <h2>The XMLHttpRequest Object</h2>
-    <button type="button" onclick="loadDoc()">Request data</button>
 
-    <p id="demo"></p>
+    <h1>El Objeto XMLHttpRequest</h1>
+
+    <h3>Escribe el nombre de la persona:</h3>
+
+    <form action=""> 
+        Primer nombre: <input type="text" id="txt1" onkeyup="showHint(this.value)">
+    </form>
+
+    <p>Sugerencias: <span id="txtHint"></span></p> 
 
     <script>
-        function loadDoc() {
-            const xhttp = new XMLHttpRequest();
-            xhttp.onload = function() {
-                document.getElementById("demo").innerHTML = this.responseText;
+        function showHint(str) {
+        if (str.length == 0) { 
+            document.getElementById("txtHint").innerHTML = "";
+            return;
+        }
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+            var suggestions = JSON.parse(this.responseText);
+            var suggestionsText = suggestions.length ? suggestions.join(", ") : "no hay sugerencias";
+            document.getElementById("txtHint").innerHTML = suggestionsText;
             }
-            xhttp.open("GET", "demo_get.asp?t=" + Math.random());
-            xhttp.send();
+        };
+        xhttp.open("GET", "apodos.php?q=" + encodeURIComponent(str), true);
+        xhttp.send();   
         }
     </script>
 
