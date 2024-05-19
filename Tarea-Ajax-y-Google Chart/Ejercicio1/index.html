@@ -3,59 +3,57 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lista de Regiones</title>
+  <title>Tabla de Regiones</title>
   <!-- Incluir la biblioteca de Google Charts -->
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
 </head>
 <body>
-    <h1>Gráfico de Barras de Regiones</h1>
-    <!-- Div donde se mostrará el gráfico -->
-    <div id="chart_div"></div>
+    <h1>Tabla de Regiones</h1>
+    <!-- Div donde se mostrará la tabla -->
+    <div id="table_div"></div>
 
     <script>
         // Cargar la biblioteca de Google Charts
-        google.charts.load('current', {'packages':['corechart']});
-        google.charts.setOnLoadCallback(drawChart);
+        google.charts.load('current', {'packages':['table']});
+        google.charts.setOnLoadCallback(drawTable);
 
-        function drawChart() {
-        // Obtener los datos JSON
-        fetch('data.json')
-            .then(response => response.json())
-            .then(data => {
-            // Crear un array para almacenar los datos del gráfico
-            const chartData = [['Región', 'Confirmados']];
+        function drawTable() {
+            // Obtener los datos JSON
+            fetch('data.json')
+                .then(response => response.json())
+                .then(data => {
+                    // Crear un array para almacenar los datos de la tabla
+                    const tableData = [['Región', 'Casos Confirmados']];
 
-            // Iterar sobre los datos JSON y agregarlos al array
-            data.forEach(entry => {
-                const region = entry.region;
-                const confirmed = entry.confirmed.length > 0 ? parseInt(entry.confirmed[entry.confirmed.length - 1].value) : 0;
-                chartData.push([region, confirmed]);
-            });
+                    // Iterar sobre los datos JSON y agregarlos al array
+                    data.forEach(entry => {
+                        const region = entry.region;
+                        const confirmed = entry.confirmed.length > 0 ? parseInt(entry.confirmed[entry.confirmed.length - 1].value) : 0;
+                        tableData.push([region, confirmed]);
+                    });
 
-            // Crear y configurar el DataTable
-            const dataTable = google.visualization.arrayToDataTable(chartData);
+                    // Crear y configurar el DataTable
+                    const dataTable = new google.visualization.DataTable();
+                    dataTable.addColumn('string', 'Región');
+                    dataTable.addColumn('number', 'Casos Confirmados');
+                    dataTable.addRows(tableData.slice(1));
 
-            // Configurar las opciones del gráfico
-            const options = {
-                title: 'Casos Confirmados por Región',
-                chartArea: {width: '50%'},
-                hAxis: {
-                    title: 'Número de Casos',
-                    minValue: 0
-                },
-                vAxis: {
-                    title: 'Región'
-                }
-            };
+                    // Configurar las opciones de la tabla
+                    const options = {
+                        title: 'Casos Confirmados por Región',
+                        showRowNumber: true,
+                        width: '100%',
+                        height: '100%'
+                    };
 
-            // Crear el gráfico de barras y mostrarlo en el div
-            const chart = new google.visualization.BarChart(document.getElementById('chart_div'));
-            chart.draw(dataTable, options);
-        })
-        // Manejar errores
-        .catch(error => console.error('Error al obtener los datos:', error));
-    }
-  </script>
+                    // Crear la tabla y mostrarla en el div
+                    const table = new google.visualization.Table(document.getElementById('table_div'));
+                    table.draw(dataTable, options);
+               })
+                // Manejar errores
+                .catch(error => console.error('Error al obtener los datos:', error));
+        }
+    </script>
 </body>
 </html>
