@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        /* Estilo para la tabla, encabezados y celdas */
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <p>Click on a CD to display album information.</p>
+    <p id='showCD'></p>
+    <table id="demo"></table>
+
+    <script>
+        // Crear una nueva solicitud XMLHttpRequest
+        const xhttp = new XMLHttpRequest();
+        let cd;
+
+        // Función que se ejecuta cuando la solicitud se completa
+        xhttp.onload = function() {
+            const xmlDoc = xhttp.responseXML; // Obtener el XML de la respuesta
+            cd = xmlDoc.getElementsByTagName("CD"); // Obtener todos los elementos CD
+            loadCD(); // Cargar la tabla con los CDs
+        }
+
+        // Configurar la solicitud para obtener el archivo XML
+        xhttp.open("GET", "cd_catalog.xml");
+        xhttp.send(); // Enviar la solicitud
+
+        // Función para cargar la tabla con la información de los CDs
+        function loadCD() {
+            let table = "<tr><th>Artist</th><th>Title</th></tr>"; // Encabezados de la tabla
+            // Iterar sobre todos los CDs y crear filas de la tabla
+            for (let i = 0; i < cd.length; i++) { 
+                table += "<tr onclick='displayCD(" + i + ")'><td>";
+                table += cd[i].getElementsByTagName("ARTIST")[0].childNodes[0].nodeValue;
+                table += "</td><td>";
+                table += cd[i].getElementsByTagName("TITLE")[0].childNodes[0].nodeValue;
+                table += "</td></tr>";
+            }
+            // Insertar la tabla en el elemento con id="demo"
+            document.getElementById("demo").innerHTML = table;
+        }
+
+        // Función para mostrar la información del CD seleccionado
+        function displayCD(i) {
+            document.getElementById("showCD").innerHTML =
+            "Artist: " +
+            cd[i].getElementsByTagName("ARTIST")[0].childNodes[0].nodeValue +
+            "<br>Title: " +
+            cd[i].getElementsByTagName("TITLE")[0].childNodes[0].nodeValue +
+            "<br>Year: " + 
+            cd[i].getElementsByTagName("YEAR")[0].childNodes[0].nodeValue;
+        }
+    </script>
+
+</body>
+</html>

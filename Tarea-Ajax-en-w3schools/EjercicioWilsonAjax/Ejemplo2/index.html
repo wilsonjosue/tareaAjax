@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+
+<html>
+  <body>
+    <!--
+      AJAX: Creacion del objeto XMLHttpRequest 
+      EJEMPLO 1 
+      Definir una función de devolución de llamada y Enviar una solicitud
+    -->
+
+    <div id="demo">
+      <h2>The XMLHttpRequest Object</h2>
+      <button type="button" onclick="loadDoc()">Change Content</button>
+    </div>
+
+    <script>
+      function loadDoc() {
+        const xhttp = new XMLHttpRequest();
+        xhttp.onload = function() {
+          document.getElementById("demo").innerHTML = this.responseText;
+        }
+        xhttp.open("GET", "ajax_info1.txt");
+        xhttp.send();
+      }
+    </script>
+  </body>
+</html>

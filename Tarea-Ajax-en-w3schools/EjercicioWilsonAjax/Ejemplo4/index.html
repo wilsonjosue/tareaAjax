@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+    <body>
+      <!--
+        AJAX: Creacion del objeto XMLHttpRequest 
+        EJEMPLO 3
+        La propiedad onreadystatechange
+      -->
+      <div id="demo">
+        <h2>The XMLHttpRequest Object</h2>
+        <button type="button" onclick="loadDoc()">Change Content</button>
+      </div>
+  
+      <script>
+        // Función para cargar contenido usando XMLHttpRequest
+        function loadDoc() {
+          const xhttp = new XMLHttpRequest();
+  
+          // Evento que se ejecuta cuando cambia el estado de readyState
+          xhttp.onreadystatechange = function() {
+            // Comprueba si la solicitud está completa (readyState 4) y fue exitosa (status 200)
+            if (this.readyState == 4 && this.status == 200) {
+              // Actualiza el contenido del elemento con id="demo"
+              document.getElementById("demo").innerHTML = this.responseText;
+            }
+          };
+  
+          // Abre una nueva solicitud GET a ajax_info.txt
+          xhttp.open("GET", "ajax_info.txt", true);
+          // Envía la solicitud
+          xhttp.send();
+        }
+      </script>
+    </body>
+</html>

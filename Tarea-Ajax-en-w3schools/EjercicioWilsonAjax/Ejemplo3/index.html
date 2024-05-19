@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <!--
+      AJAX: Creacion del objeto XMLHttpRequest 
+      EJEMPLO 2 
+      Multiples funciones
+    -->
+
+    <h2>AJAX Multiple Functions Example</h2>
+
+    <div id="content1">
+      <h3>Content from URL 1</h3>
+      <button type="button" onclick="loadDoc('ajax_info1.txt', myFunction1)">Load Content 1</button>
+      <p id="result1">Content will be loaded here...</p>
+    </div>
+
+    <div id="content2">
+      <h3>Content from URL 2</h3>
+      <button type="button" onclick="loadDoc('ajax_info2.txt', myFunction2)">Load Content 2</button>
+      <p id="result2">Content will be loaded here...</p>
+    </div>
+
+    <script>
+      function loadDoc(url, cFunction) {
+        const xhttp = new XMLHttpRequest();
+        xhttp.onload = function() {
+          cFunction(this);
+        };
+        xhttp.open("GET", url);
+        xhttp.send();
+      }
+
+      function myFunction1(xhttp) {
+        document.getElementById("result1").innerHTML = xhttp.responseText;
+      }
+
+      function myFunction2(xhttp) {
+        document.getElementById("result2").innerHTML = xhttp.responseText;
+      }
+    </script>
+  </body>
+</html>
+
