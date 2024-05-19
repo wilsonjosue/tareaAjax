@@ -8,22 +8,21 @@
         google.charts.load('current', {'packages':['table']});
         google.charts.setOnLoadCallback(loadData);
 
-        // Función para cargar los datos del archivo XML usando AJAX
+        // Función para cargar los datos del archivo JSON usando AJAX
         function loadData() {
             const xhttp = new XMLHttpRequest();
             xhttp.onreadystatechange = function() {
                 if (this.readyState == 4 && this.status == 200) {
-                    parseXML(this);
+                    const jsonData = JSON.parse(this.responseText);
+                    drawTable(jsonData);
                 }
             };
-            xhttp.open("GET", "cd_catalog.xml", true);
+            xhttp.open("GET", "data.json", true);
             xhttp.send();
         }
 
-        // Función para parsear el XML y dibujar la tabla con Google Charts
-        function parseXML(xml) {
-            const xmlDoc = xml.responseXML;
-            const cds = xmlDoc.getElementsByTagName("CD");
+        // Función para dibujar la tabla con Google Charts
+        function drawTable(dataArray) {
             const data = new google.visualization.DataTable();
 
             // Definir las columnas de la tabla
@@ -35,21 +34,15 @@
             data.addColumn('number', 'Year');
 
             // Agregar las filas a la tabla
-            for (let i = 0; i < cds.length; i++) {
-                const title = cds[i].getElementsByTagName("TITLE")[0].childNodes[0].nodeValue;
-                const artist = cds[i].getElementsByTagName("ARTIST")[0].childNodes[0].nodeValue;
-                const country = cds[i].getElementsByTagName("COUNTRY")[0].childNodes[0].nodeValue;
-                const company = cds[i].getElementsByTagName("COMPANY")[0].childNodes[0].nodeValue;
-                const price = parseFloat(cds[i].getElementsByTagName("PRICE")[0].childNodes[0].nodeValue);
-                const year = parseInt(cds[i].getElementsByTagName("YEAR")[0].childNodes[0].nodeValue);
-
-                data.addRow([title, artist, country, company, price, year]);
-            }
+            dataArray.forEach(item => {
+                data.addRow([item.title, item.artist, item.country, item.company, item.price, item.year]);
+            });
 
             // Dibujar la tabla
             const table = new google.visualization.Table(document.getElementById('table_div'));
             table.draw(data, {showRowNumber: true, width: '100%', height: '100%'});
         }
+
     </script>
 </head>
 <body>
