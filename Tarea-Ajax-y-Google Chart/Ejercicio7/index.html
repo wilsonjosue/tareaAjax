@@ -23,35 +23,7 @@
         fetch('data.json')
             .then(response => response.json())
             .then(data => {
-            // Crear un array para almacenar los datos del gráfico
-            const chartData = [['Región', 'Confirmados']];
-
-            // Iterar sobre los datos JSON y agregarlos al array
-            data.forEach(entry => {
-                const region = entry.region;
-                const confirmed = entry.confirmed.length > 0 ? parseInt(entry.confirmed[entry.confirmed.length - 1].value) : 0;
-                chartData.push([region, confirmed]);
-            });
-
-            // Crear y configurar el DataTable
-            const dataTable = google.visualization.arrayToDataTable(chartData);
-
-            // Configurar las opciones del gráfico
-            const options = {
-                title: 'Casos Confirmados por Región',
-                chartArea: {width: '50%'},
-                hAxis: {
-                    title: 'Número de Casos',
-                    minValue: 0
-                },
-                vAxis: {
-                    title: 'Región'
-                }
-            };
-
-            // Crear el gráfico de barras y mostrarlo en el div
-            const chart = new google.visualization.BarChart(document.getElementById('chart_div'));
-            chart.draw(dataTable, options);
+           
         })
         // Manejar errores
         .catch(error => console.error('Error al obtener los datos:', error));
