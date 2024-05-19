@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <!-- 
+            AJAX - Solicitud XMLHttpRequest 
+            EJEMPLO 4 
+            Solicitudes de publicación asincrono
+        -->
+
+        <!-- Título de la página -->
+        <h2>The XMLHttpRequest Object</h2>
+        
+        <!-- Botón para realizar la solicitud AJAX -->
+        <button type="button" onclick="loadDoc()">Request data</button>
+        
+        <!-- Contenedor para mostrar la respuesta de la solicitud AJAX -->
+        <p id="demo"></p>
+         
+        <script>
+            function loadDoc() {
+              // Crear una nueva instancia de XMLHttpRequest
+              const xhttp = new XMLHttpRequest();
+              
+              // Definir la función de devolución de llamada que se ejecutará cuando la solicitud esté completa
+              xhttp.onload = function() {
+                // Actualizar el contenido del elemento con id="demo" con la respuesta de la solicitud
+                document.getElementById("demo").innerHTML = this.responseText;
+              }
+              
+              // Configurar la solicitud POST a "demo_post2.asp"
+              xhttp.open("POST", "demo_post2.asp");
+              
+              // Establecer el tipo de contenido de la solicitud
+              xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+              
+              // Enviar la solicitud con los parámetros fname=Henry y lname=Ford
+              xhttp.send("fname=Henry&lname=Ford");
+            }
+        </script>
+    </body>
+</html>

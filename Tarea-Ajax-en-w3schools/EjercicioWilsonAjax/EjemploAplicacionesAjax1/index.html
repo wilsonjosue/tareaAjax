@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- 
+        AJAX - Aplicaciones XML
+        EJEMPLO 
+        Mostrar datos XML en una tabla HTML
+    -->
+
+    <!-- Botón para cargar la colección de CDs -->
+    <button type="button" onclick="loadXMLDoc()">Get my CD collection</button>
+    <br><br>
+    
+    <!-- Tabla para mostrar los datos de los CDs -->
+    <table id="demo"></table>
+
+    <script>
+        // Función para cargar el documento XML
+        function loadXMLDoc() {
+            // Crear una nueva instancia de XMLHttpRequest
+            const xhttp = new XMLHttpRequest();
+            
+            // Definir la función de devolución de llamada que se ejecutará cuando la solicitud esté completa
+            xhttp.onload = function() {
+                // Obtener el documento XML de la respuesta
+                const xmlDoc = xhttp.responseXML;
+                // Obtener todos los elementos <CD>
+                const cd = xmlDoc.getElementsByTagName("CD");
+                // Llamar a la función para procesar los datos del CD
+                myFunction(cd);
+            };
+            
+            // Configurar la solicitud GET al archivo XML
+            xhttp.open("GET", "cd_catalog.xml", true);
+            // Enviar la solicitud
+            xhttp.send();
+        }
+
+        // Función para procesar los datos del CD y crear la tabla
+        function myFunction(cd) {
+            // Crear la fila de encabezado de la tabla
+            let table = "<tr><th>Artist</th><th>Title</th></tr>";
+            
+            // Recorrer cada elemento <CD>
+            for (let i = 0; i < cd.length; i++) {
+                // Agregar una fila a la tabla con los datos del artista y el título
+                table += "<tr><td>" +
+                    cd[i].getElementsByTagName("ARTIST")[0].childNodes[0].nodeValue +
+                    "</td><td>" +
+                    cd[i].getElementsByTagName("TITLE")[0].childNodes[0].nodeValue +
+                    "</td></tr>";
+            }
+            
+            // Actualizar el contenido del elemento con id="demo" con la tabla generada
+            document.getElementById("demo").innerHTML = table;
+        }
+    </script>
+
+</body>
+</html>
